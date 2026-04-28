@@ -86,6 +86,9 @@ namespace StarterAssets
 			}
 		}
 
+		// audio manager
+		AudioManager audioManager;
+
 		private void Awake()
 		{
 			// get a reference to our main camera
@@ -93,6 +96,8 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+			// get a reference to the audio manager
+			audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 		}
 
 		private void Start()
@@ -196,7 +201,19 @@ namespace StarterAssets
 
 			// move the player
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-		}
+
+			//when player move, the sounds starts to play 
+			if (_input.move != Vector2.zero && Grounded)
+				{
+					audioManager.PlaySFX(audioManager.playerRunning, true);
+				}
+				else if (Grounded) 
+				{
+					audioManager.StopSFX();
+				}
+				
+}
+		
 
 		private void JumpAndGravity()
 		{
@@ -216,6 +233,7 @@ namespace StarterAssets
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					audioManager.PlayJumpSFX(); // play when jump
 				}
 
 				// jump timeout
