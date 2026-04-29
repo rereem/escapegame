@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - Audio
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
