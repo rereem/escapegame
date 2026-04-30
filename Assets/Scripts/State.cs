@@ -298,6 +298,7 @@ public class Attack : State
         agent.ResetPath();           // add this to stop the momentum of the NavMeshAgent immediately when entering attack state whichh used to cause sliding
         agent.velocity = Vector3.zero; // add this
         anim.SetTrigger("isShooting");
+        npc.GetComponent<AI>().isAttacking = true;
         base.Enter();
     }
 
@@ -332,6 +333,7 @@ public class Attack : State
     {
         anim.ResetTrigger("isShooting");
         // shoot.Stop();
+        npc.GetComponent<AI>().isAttacking = false;
         base.Exit();
     }
 }

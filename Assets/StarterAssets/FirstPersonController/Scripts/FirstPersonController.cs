@@ -88,6 +88,8 @@ namespace StarterAssets
 
 		// audio manager
 		AudioManager audioManager;
+		[SerializeField] private int maxHealth;
+		[SerializeField] private int currentHealth;
 
 		private void Awake()
 		{
