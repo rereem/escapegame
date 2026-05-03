@@ -13,6 +13,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip playerRunning;
     public AudioClip backgroundMusic;
     public AudioClip playerJumping;
+    public AudioClip enemyPunch;
     
 
     private void Start()
@@ -31,13 +32,28 @@ public class AudioManager : MonoBehaviour
     }
 
     public void PlayJumpSFX()
-{
-    SFXSource.PlayOneShot(playerJumping);
-}
+    {
+        SFXSource.PlayOneShot(playerJumping);
+    }
 
     public void StopSFX()
     {
     SFXSource.Stop();
+    }
+
+    public void PlayPunchSFX()
+    {
+        musicSource.PlayOneShot(enemyPunch) ;
+    }
+
+    public void FadeMusicOut(float volume)
+    {
+        musicSource.volume = volume; // ✅ called every frame to reduce volume
+    }
+
+public void StopMusic()
+    {
+        musicSource.Stop(); // ✅ fully stop the music
     }
 
 }

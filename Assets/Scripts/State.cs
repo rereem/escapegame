@@ -280,12 +280,14 @@ public class Pursue : State
 // Represents the state when the NPC is actively engaging the player
 public class Attack : State
 {
+    AudioManager audioManager;
     float damageTimer = 0f;
     // AudioSource shoot;
 
     public Attack(
         GameObject _npc, UnityEngine.AI.NavMeshAgent _agent, Animator _anim, Transform _player) : base(_npc, _agent, _anim, _player)
     {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         name = STATE.ATTACK;
         // shoot = _npc.GetComponent<AudioSource>();
     }
@@ -298,7 +300,6 @@ public class Attack : State
         agent.ResetPath();           // add this to stop the momentum of the NavMeshAgent immediately when entering attack state whichh used to cause sliding
         agent.velocity = Vector3.zero; // add this
         anim.SetTrigger("isShooting");
-        npc.GetComponent<AI>().isAttacking = true;
         base.Enter();
     }
 
@@ -314,12 +315,34 @@ public class Attack : State
         }
 
         // Uncomment when PlayerHealth is ready
-        // damageTimer += Time.deltaTime;
-        // if (damageTimer >= 2f)
-        // {
-        //     player.GetComponent<PlayerHealth>().TakeDamage();
-        //     damageTimer = 0f;
-        // }
+        //damageTimer += Time.deltaTime;
+        //    if (damageTimer >= 2f)
+          //  {
+            //    player.GetComponent<Health>().TakeDamage();
+              //  damageTimer = 0f;
+            //}
+            damageTimer += Time.deltaTime;
+        if (damageTimer >= 1.6f)
+        {
+            foreach (Collider player in Physics.OverlapSphere(npc.transform.position, DisShoot))
+            {
+                Health health = player.GetComponent<Health>();
+                if (health != null)
+                {
+                    health.DealDamage();
+                    audioManager.PlayPunchSFX(); // ✅ play punch sound on every hit
+                }
+            }
+            damageTimer = 0f; // ✅ reset timer
+        }
+            foreach(Collider player in Physics.OverlapSphere(npc.transform.position, DisShoot))
+            {
+               Health health = player.GetComponent<Health>();
+                if (health != null)
+                {
+                     health.DealDamage();
+                }
+            }
 
         // If the player moves out of attack range, return to pursue until they are lost
         if (!CanAttackPlayer())
@@ -333,7 +356,7 @@ public class Attack : State
     {
         anim.ResetTrigger("isShooting");
         // shoot.Stop();
-        npc.GetComponent<AI>().isAttacking = false;
+       
         base.Exit();
     }
 }

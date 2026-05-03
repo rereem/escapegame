@@ -2,28 +2,36 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    public float startingHealth = 100f;
-    public HealthBar healthBar; 
+    public float currentHealth;
+    public float maxHealth;
+    public float DamageAmount;
 
-    public float HealthPoints
+    public static Health instance ; 
+    public HealthBar healthBar;
+
+    private void Awake()
     {
-        get { return _healthPoints; }
-        set {
-            _healthPoints = Mathf.Clamp(value, 0f, startingHealth);
-            healthBar.SetHealth(_healthPoints); 
-            if (_healthPoints <= 0f)
-            {
-                Debug.Log("Player is Dead!");
-            }
+        instance = this;
+        
+    }
+
+    public void Start()
+    {
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
+    }
+
+    public void DealDamage()
+    {
+        currentHealth -= DamageAmount;
+        UIcontroller.Instance.ShowDamage();
+        healthBar.SetHealth(currentHealth);
+
+        if (currentHealth <= 0)
+        {
+            DeathScreen.instance.ShowDeathScreen();
+            gameObject.SetActive(false);
         }
     }
 
-    [SerializeField]
-    private float _healthPoints = 100f;
-
-    void Start()
-    {
-        HealthPoints = startingHealth;
-        healthBar.SetMaxHealth(startingHealth); 
-    }
 }
