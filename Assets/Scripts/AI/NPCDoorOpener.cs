@@ -15,12 +15,12 @@ public class NPCDoorOpener : MonoBehaviour
         foreach (GameObject doorObj in doors)
         {
             float dist = Vector3.Distance(transform.position, doorObj.transform.position);
-            Debug.Log("Door distance: " + dist + " checkRadius: " + checkRadius);
+            //Debug.Log("Door distance: " + dist + " checkRadius: " + checkRadius);
             if (dist < checkRadius)
             {
                 opencloseDoor door = doorObj.GetComponentInChildren<opencloseDoor>();
                 if (door == null) door = doorObj.GetComponent<opencloseDoor>();
-                Debug.Log("Door script found: " + door);
+                //Debug.Log("Door script found: " + door);
                 if (door != null && !door.open)
                 {
                     door.OpenDoor();

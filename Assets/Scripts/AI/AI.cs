@@ -15,7 +15,7 @@ public class AI : MonoBehaviour
         agent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
         anim = this.GetComponent<Animator>();
         currentState = new Idle(this.gameObject, agent, anim, player);
-        Debug.Log("Checkpoints found: " + GameEnvironment.singleTon.CheckPoints.Count);
+        //Debug.Log("Checkpoints found: " + GameEnvironment.singleTon.CheckPoints.Count);
     }
 
     
