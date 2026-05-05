@@ -237,6 +237,7 @@ public class Pursue : State
     public override void Enter()
     {
         anim.SetTrigger("isRunning");
+        npc.GetComponent<AI>().StartRunSound(); // start running sound when entering pursue state
         base.Enter();
     }
 
@@ -273,6 +274,7 @@ public class Pursue : State
     public override void Exit()
     {
         anim.ResetTrigger("isRunning");
+        npc.GetComponent<AI>().StopRunSound(); // stop running sound when exiting pursue state
         base.Exit();
     }
 }

@@ -208,17 +208,17 @@ namespace StarterAssets
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
             //when player move, the sounds starts to play 
-            if (audioManager != null)
-            {
-                if (_input.move != Vector2.zero && Grounded)
-                {
-                    audioManager.PlaySFX(audioManager.playerRunning, true);
-                }
-                else if (Grounded)
-                {
-                    audioManager.StopSFX();
-                }
-            }
+           // if (audioManager != null)
+            //{
+               // if (_input.move != Vector2.zero && Grounded)
+                //{
+                //    audioManager.PlaySFX(audioManager.playerRunning, true);
+                //}
+                //else if (Grounded)
+                //{
+                 //   audioManager.StopSFX();
+              //  }
+          // }
 
         }
 		

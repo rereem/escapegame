@@ -8,6 +8,12 @@ public class AI : MonoBehaviour
     Animator anim;
     public Transform player;
     State currentState;
+    private AudioSource enemyRunSound;
+
+    void Awake() //  change Start to Awake for enemyRunSound
+    {
+        enemyRunSound = this.GetComponent<AudioSource>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +22,18 @@ public class AI : MonoBehaviour
         anim = this.GetComponent<Animator>();
         currentState = new Idle(this.gameObject, agent, anim, player);
         //Debug.Log("Checkpoints found: " + GameEnvironment.singleTon.CheckPoints.Count);
+    }
+
+    public void StartRunSound()
+    {
+        if (!enemyRunSound.isPlaying)
+            enemyRunSound.Play(); // ✅ start running sound
+    }
+
+    public void StopRunSound()
+    {
+        if (enemyRunSound.isPlaying)
+            enemyRunSound.Stop(); // ✅ stop running sound
     }
 
     

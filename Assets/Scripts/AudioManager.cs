@@ -10,7 +10,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource SFXSource;
 
     [Header("Audio Clips")]
-    public AudioClip playerRunning;
+    
     public AudioClip backgroundMusic;
     public AudioClip playerJumping;
     public AudioClip enemyPunch;
@@ -48,12 +48,19 @@ public class AudioManager : MonoBehaviour
 
     public void FadeMusicOut(float volume)
     {
-        musicSource.volume = volume; // ✅ called every frame to reduce volume
+        musicSource.volume = volume; 
     }
 
 public void StopMusic()
     {
-        musicSource.Stop(); // ✅ fully stop the music
+        musicSource.Stop();
+    }
+
+    public AudioClip buttonClick; 
+
+    public void PlayButtonClick()
+    {
+        musicSource.PlayOneShot(buttonClick);
     }
 
 }
