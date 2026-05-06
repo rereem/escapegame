@@ -19,13 +19,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Win()
+    void Start()
     {
-        SceneManager.LoadScene("WinScene");
-    }
-
-    public void Lose()
-    {
-        SceneManager.LoadScene("LoseScene");
+        NotificationManager.Show("Find the key to escape...");
     }
 }

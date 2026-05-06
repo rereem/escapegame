@@ -3,7 +3,7 @@ using TMPro;
 using SojaExiles;
 using System.Collections;
 
-public class KeypadManager : MonoBehaviour
+public class KeypadManager : MonoBehaviour, IInteractable
 {
     [Header("Keypad UI")]
     public GameObject keypadUI;
@@ -23,7 +23,38 @@ public class KeypadManager : MonoBehaviour
     bool keypadOpen = false;
     bool codeEntered = false;
 
+    public GameObject promptCanvas;
 
+    public void ShowPrompt(bool show)
+    {
+        if (promptCanvas == null) return;
+        // hide prompt when code already entered
+        promptCanvas.SetActive(show && !codeEntered);
+    }
+
+    public void Interact()
+    {
+        if (codeEntered) return;
+        // trigger the keypad open same as before
+        keypadOpen = !keypadOpen;
+        keypadUI.SetActive(keypadOpen);
+        currentInput = "";
+        ClearBoxes();
+
+        if (keypadOpen)
+        {
+            keypadAnimator.SetTrigger("Open");
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Time.timeScale = 1f;
+        }
+    }
     void Start()
     {
         keypadUI.SetActive(false);
@@ -122,7 +153,7 @@ public class KeypadManager : MonoBehaviour
             //    keyObject.SetActive(true);
 
             OvenFlip.isUnlocked = true; // unlock the oven
-         
+            NotificationManager.Show(" Oven unlocked!");
             DisableWithDelay();
 
 

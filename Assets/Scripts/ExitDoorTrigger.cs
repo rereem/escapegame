@@ -18,11 +18,12 @@ public class ExitDoorTrigger : MonoBehaviour
             if (GameManager.instance.hasKey)
             {
                 Debug.Log("Opening door!");
-                door.OpenDoor();
+                door.Interact();
             }
             else
             {
                 Debug.Log("Need a key!");
+                NotificationManager.Show(" You need a key to escape!");
             }
         }
     }

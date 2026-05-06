@@ -223,7 +223,9 @@ public class Patrol : State
 public class Pursue : State
 {
     float losePlayerTimer = 0f;
-    float losePlayerTime = 1f; // seconds before giving up chase
+    float losePlayerTime = 2f; // seconds before giving up chase
+    float pursueTimer = 0f;
+    float maxPursueTime = 3f; // hard limit even if she sees player
 
     public Pursue(
         GameObject _npc, UnityEngine.AI.NavMeshAgent _agent, Animator _anim, Transform _player) : base(_npc, _agent, _anim, _player)
@@ -236,6 +238,8 @@ public class Pursue : State
 
     public override void Enter()
     {
+        pursueTimer = 0f;
+        losePlayerTimer = 0f;
         anim.SetTrigger("isRunning");
         npc.GetComponent<AI>().StartRunSound(); // start running sound when entering pursue state
         base.Enter();
@@ -243,6 +247,16 @@ public class Pursue : State
 
     public override void Update()
     {
+        pursueTimer += Time.deltaTime;
+
+        // hard limit — always gives up after maxPursueTime even if she sees player
+        if (pursueTimer >= maxPursueTime)
+        {
+            nextState = new Patrol(npc, agent, anim, player);
+            stage = EVENT.EXIT;
+            return;
+        }
+
         // Continuously update destination to current player position
         agent.SetDestination(player.position);
 
@@ -257,16 +271,16 @@ public class Pursue : State
             // If the player escapes vision, start timer before giving up chase
             else if (!CanSeePlayer())
             {
-                //losePlayerTimer += Time.deltaTime;
-                //if (losePlayerTimer >= losePlayerTime)
-                //{
+                losePlayerTimer += Time.deltaTime;
+                if (losePlayerTimer >= losePlayerTime)
+                {
                     nextState = new Patrol(npc, agent, anim, player);
                     stage = EVENT.EXIT;
-                //}
+                }
             }
             else
             {
-                //losePlayerTimer = 0f; // reset timer if she sees player again
+                losePlayerTimer = 0f; // reset timer if she sees player again
             }
         }
     }
@@ -300,7 +314,7 @@ public class Attack : State
         agent.isStopped = true;
         // shoot.Play();
         agent.ResetPath();           // add this to stop the momentum of the NavMeshAgent immediately when entering attack state whichh used to cause sliding
-        agent.velocity = Vector3.zero; // add this
+        agent.velocity = Vector3.zero; 
         anim.SetTrigger("isShooting");
         base.Enter();
     }
@@ -316,13 +330,7 @@ public class Attack : State
                 Quaternion.LookRotation(direction), Time.deltaTime * 2f);
         }
 
-        // Uncomment when PlayerHealth is ready
-        //damageTimer += Time.deltaTime;
-        //    if (damageTimer >= 2f)
-          //  {
-            //    player.GetComponent<Health>().TakeDamage();
-              //  damageTimer = 0f;
-            //}
+        
             damageTimer += Time.deltaTime;
         if (damageTimer >= 1.6f)
         {

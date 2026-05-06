@@ -20,27 +20,31 @@ public class letter : MonoBehaviour, IInteractable
     }
 
     // TRIGGER handles showing prompt
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.CompareTag("Player") &&
-            !other.transform.root.CompareTag("Player")) return;
-        promptCanvas.SetActive(true);
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (!other.CompareTag("Player") &&
+    //        !other.transform.root.CompareTag("Player")) return;
+    //    promptCanvas.SetActive(true);
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player") &&
-            !other.transform.root.CompareTag("Player")) return;
-        promptCanvas.SetActive(false);
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (!other.CompareTag("Player") &&
+    //        !other.transform.root.CompareTag("Player")) return;
+    //    promptCanvas.SetActive(false);
+    //}
 
     // INTERFACE still needed but prompt handled by trigger now
-    public void ShowPrompt(bool show) { } // leave empty
+    public void ShowPrompt(bool show)
+    {
+        promptCanvas.SetActive(show); // stop leaving this empty!
+    }
 
     public void Interact()
     {
         toggle = !toggle;
         promptCanvas.SetActive(false);
+        NotificationManager.Show("📄 You found a note!");
 
         if (toggle)
         {

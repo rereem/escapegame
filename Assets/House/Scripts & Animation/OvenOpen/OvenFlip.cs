@@ -1,55 +1,40 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SojaExiles
 {
-    public class OvenFlip : MonoBehaviour
+    public class OvenFlip : MonoBehaviour, IInteractable
     {
         public Animator openandcloseoven;
         public bool open;
         public Transform Player;
         public static bool isUnlocked = false;
+        public GameObject promptCanvas;
 
         void Start()
         {
             open = false;
+            if (promptCanvas != null) promptCanvas.SetActive(false);
         }
 
-        void OnMouseOver()
+        public void ShowPrompt(bool show)
         {
-            if (Player)
-            {
-                // don't interact if keypad is open // or if game is paused
-                if (Time.timeScale == 0f) return;
-                if (!isUnlocked)  return;
-
-                float dist = Vector3.Distance(Player.position, transform.position);
-                if (dist < 15)
-                {
-                    if (open == false)
-                    {
-                        if (Input.GetKeyDown(KeyCode.E))
-                        {
-                            StartCoroutine(opening());
-
-                        }
-                    }
-                    else
-                    {
-                        if (open == true)
-                        {
-                            if (Input.GetKeyDown(KeyCode.E))
-                            {
-                                StartCoroutine(closing());
-                            }
-                        }
-                    }
-                }
-            }
+            if (promptCanvas == null) return;
+            // only show prompt if oven is unlocked!
+            promptCanvas.SetActive(show && isUnlocked);
         }
 
-        // Called by KeypadManager when correct code is entered
+        public void Interact()
+        {
+            if (!isUnlocked) return;
+            if (Time.timeScale == 0f) return;
+
+            if (!open)
+                StartCoroutine(opening());
+            else
+                StartCoroutine(closing());
+        }
+
         public void OpenOven()
         {
             if (!open)
@@ -58,28 +43,20 @@ namespace SojaExiles
 
         IEnumerator opening()
         {
-            print("you are opening the oven");
             openandcloseoven.Play("OpenOven");
             open = true;
             yield return new WaitForSeconds(.5f);
-
             Keypickup key = FindObjectOfType<Keypickup>();
-            if (key != null)
-                key.EnableCollider();
-
+            if (key != null) key.EnableCollider();
         }
 
         IEnumerator closing()
         {
-            print("you are closing the oven");
             openandcloseoven.Play("ClosingOven");
             open = false;
             yield return new WaitForSeconds(.5f);
-
             Keypickup key = FindObjectOfType<Keypickup>();
-            if (key != null)
-                key.DisableCollider();
+            if (key != null) key.DisableCollider();
         }
-       
     }
 }
