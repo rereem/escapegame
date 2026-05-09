@@ -105,7 +105,7 @@ public class State
     // AI vision and attack threshold values
     protected float visDis = 30f;
     protected float visAngle = 60f; // wider angle for game
-    protected float DisShoot = 1.0f; // closer attack range
+    protected float DisShoot = 1.5f; // closer attack range
 }
 
 // Represents the default state where the NPC is waiting
@@ -159,6 +159,9 @@ public class Patrol : State
     {
         name = STATE.PATROL;
         agent.speed = 2f; // Set a slower walking speed
+        agent.stoppingDistance = 0f; // ADD
+        agent.ResetPath();           // ADD — clears any leftover chase path
+        agent.velocity = Vector3.zero; // ADD — kills leftover momentum
         if (agent.isOnNavMesh)
             agent.isStopped = false;
         agent.autoBraking = true; // Smooth stop at checkpoints
@@ -223,7 +226,7 @@ public class Patrol : State
 public class Pursue : State
 {
     float losePlayerTimer = 0f;
-    float losePlayerTime = 2f; // seconds before giving up chase
+    float losePlayerTime = 1.5f; // seconds before giving up chase
     float pursueTimer = 0f;
     float maxPursueTime = 3f; // hard limit even if she sees player
 
@@ -232,6 +235,7 @@ public class Pursue : State
     {
         name = STATE.PURSUE;
         agent.speed = 5f; // Set a faster running speed
+        agent.stoppingDistance = 1.5f;
         if (agent.isOnNavMesh)
             agent.isStopped = false;
     }
@@ -340,10 +344,10 @@ public class Attack : State
                 if (health != null)
                 {
                     health.DealDamage();
-                    audioManager.PlayPunchSFX(); // ✅ play punch sound on every hit
+                    audioManager.PlayPunchSFX(); //  play punch sound on every hit
                 }
             }
-            damageTimer = 0f; // ✅ reset timer
+            damageTimer = 0f; // reset timer
         }
             foreach(Collider player in Physics.OverlapSphere(npc.transform.position, DisShoot))
             {

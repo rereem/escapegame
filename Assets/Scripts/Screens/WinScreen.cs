@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class WinScreen : MonoBehaviour
 {
@@ -10,10 +11,23 @@ public class WinScreen : MonoBehaviour
     public AudioManager audioManager;
     public GameObject winScreenUI; // drag the Canvas WinScreen panel here
     public GameObject HealthBarUI; 
+    public GameObject Buttons;
 
 
     public static WinScreen instance;
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void MainMenu()
+    {
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene("startmenu"); // your start menu scene name
+    }
     private void Awake()
     {
         instance = this;
@@ -41,19 +55,18 @@ public class WinScreen : MonoBehaviour
 
     IEnumerator FadeIn()
     {
-        if (audioManager != null)
-            audioManager.StopMusic();
-
         blackOverlay.color = new Color(0, 0, 0, 1);
         youWonImage.color = new Color(1, 1, 1, 0);
 
         yield return new WaitForSecondsRealtime(1f);
-
+        //blackoveraly
         float alpha = 1f;
         while (alpha > 0f)
         {
             alpha -= Time.unscaledDeltaTime * fadeSpeed;
             blackOverlay.color = new Color(0, 0, 0, alpha);
+            if (audioManager != null)
+                audioManager.FadeMusicOut(1f - alpha);
             yield return null;
         }
 
@@ -62,7 +75,19 @@ public class WinScreen : MonoBehaviour
         {
             alpha += Time.unscaledDeltaTime * fadeSpeed;
             youWonImage.color = new Color(1, 1, 1, alpha);
+            Buttons.SetActive(true);
+
             yield return null;
         }
+
+        if (audioManager != null)
+            audioManager.StopMusic();
+
+        blackOverlay.raycastTarget = false; // ADD THIS — stops it blocking clicks
+
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
+
 }
