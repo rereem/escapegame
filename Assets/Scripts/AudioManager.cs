@@ -43,7 +43,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlayPunchSFX()
     {
-        musicSource.PlayOneShot(enemyPunch) ;
+         if (!SFXSource.isPlaying)
+           SFXSource.PlayOneShot(enemyPunch);
     }
 
     public void FadeMusicOut(float volume)

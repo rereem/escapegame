@@ -120,6 +120,7 @@ public class Idle : State
     public override void Enter()
     {
         anim.SetTrigger("isIdle");
+        npc.GetComponent<AI>().StopMoveSound(); // ADD: stop sound while idle
         base.Enter();
     }
 
@@ -153,6 +154,7 @@ public class Patrol : State
     float waitTimer = 0f;
     float waitTime = 2f; // seconds to wait at each checkpoint
     bool isWaiting = false;
+    
 
     public Patrol(
         GameObject _npc, UnityEngine.AI.NavMeshAgent _agent, Animator _anim, Transform _player) : base(_npc, _agent, _anim, _player)
@@ -170,7 +172,9 @@ public class Patrol : State
     public override void Enter()
     {
         anim.SetTrigger("isWalking");
+        npc.GetComponent<AI>().StartWalkSound();
         base.Enter();
+        
     }
 
     public override void Update()
@@ -218,6 +222,7 @@ public class Patrol : State
     public override void Exit()
     {
         anim.ResetTrigger("isWalking");
+        npc.GetComponent<AI>().StopMoveSound(); // ADD: stop walking sound
         base.Exit();
     }
 }
@@ -311,8 +316,7 @@ public class Attack : State
         name = STATE.ATTACK;
         // shoot = _npc.GetComponent<AudioSource>();
     }
-
- 
+    
     public override void Enter()
     {
         agent.isStopped = true;
@@ -320,7 +324,10 @@ public class Attack : State
         agent.ResetPath();           // add this to stop the momentum of the NavMeshAgent immediately when entering attack state whichh used to cause sliding
         agent.velocity = Vector3.zero; 
         anim.SetTrigger("isShooting");
+        npc.GetComponent<AI>().StopMoveSound(); // ADD stop movement sound while attacking
         base.Enter();
+        
+        
     }
 
     public override void Update()
@@ -336,18 +343,21 @@ public class Attack : State
 
         
             damageTimer += Time.deltaTime;
-        if (damageTimer >= 1.6f)
+            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            bool soundPlayed = false;
+
+        if (stateInfo.IsName("Cross Punch"))
         {
-            foreach (Collider player in Physics.OverlapSphere(npc.transform.position, DisShoot))
+            if (stateInfo.normalizedTime % 1f >= 0.45f && !soundPlayed)
             {
-                Health health = player.GetComponent<Health>();
-                if (health != null)
-                {
-                    health.DealDamage();
-                    audioManager.PlayPunchSFX(); //  play punch sound on every hit
-                }
+                audioManager.PlayPunchSFX();
+                soundPlayed = true;
             }
-            damageTimer = 0f; // reset timer
+
+            if (stateInfo.normalizedTime % 1f >= 0.95f)
+            {
+                soundPlayed = false;
+            }
         }
             foreach(Collider player in Physics.OverlapSphere(npc.transform.position, DisShoot))
             {
